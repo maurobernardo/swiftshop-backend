@@ -3,19 +3,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
 // ============================================================================
-// CONFIGURAÇÃO: Para testar no CELULAR FÍSICO, altere este IP para o IP da sua máquina
-// IPs disponíveis: 192.168.19.1, 192.168.147.1, 172.16.21.145
-// Execute "ipconfig" no Windows para ver qual rede seu celular está
+// CONFIGURAÇÃO DA API
 // ============================================================================
-const LOCAL_NETWORK_IP = '172.16.21.145'; // ← IP correto da rede
-const BACKEND_PORT = '8888'; // Porta 8888 para evitar conflitos
+// Para PRODUÇÃO (deploy): Defina EXPO_PUBLIC_API_URL no .env ou variáveis de ambiente
+// Exemplo: EXPO_PUBLIC_API_URL=https://swiftshop-backend.onrender.com
+//
+// Para DESENVOLVIMENTO LOCAL:
+// Altere LOCAL_NETWORK_IP para o IP da sua máquina na rede local
+// Execute "ipconfig" (Windows) ou "ifconfig" (Linux/Mac) para ver seu IP
+// ============================================================================
+const LOCAL_NETWORK_IP = '172.16.21.145'; // ← IP da sua máquina na rede local
+const BACKEND_PORT = '8888'; // Porta do backend local
 
+// URL padrão para desenvolvimento local
 const defaultBaseURL = Platform.select({
 	ios: `http://${LOCAL_NETWORK_IP}:${BACKEND_PORT}`,
 	android: `http://${LOCAL_NETWORK_IP}:${BACKEND_PORT}`,
 	default: `http://${LOCAL_NETWORK_IP}:${BACKEND_PORT}`,
 });
 
+// Prioriza variável de ambiente (produção), senão usa URL local (desenvolvimento)
 const baseURL = process.env.EXPO_PUBLIC_API_URL || defaultBaseURL;
 
 // Log baseURL once to help diagnose connectivity on devices

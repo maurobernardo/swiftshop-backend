@@ -10,8 +10,10 @@ from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.models import User, UserRole
 from backend.timezone_utils import now_moz
+import os
 
-SECRET_KEY = "CHANGE_ME_DEV_ONLY"
+# Secret key da variável de ambiente ou fallback para desenvolvimento
+SECRET_KEY = os.environ.get("SECRET_KEY", "CHANGE_ME_DEV_ONLY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 

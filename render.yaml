@@ -1,0 +1,29 @@
+# Render Blueprint para deploy automático
+# Este arquivo facilita o deploy do backend SwiftShop no Render
+# Documentação: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: swiftshop-backend
+    env: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    plan: free  # ou starter/standard para produção
+    envVars:
+      - key: PORT
+        sync: false  # Render define automaticamente
+      - key: SECRET_KEY
+        generateValue: true  # Render gera automaticamente
+      - key: DATABASE_URL
+        sync: false  # Use PostgreSQL no Render para produção
+      - key: PAYPAL_CLIENT_ID
+        sync: false  # Configure no painel do Render
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false  # Configure no painel do Render
+      - key: MAIL_USERNAME
+        sync: false  # Configure no painel do Render
+      - key: MAIL_PASSWORD
+        sync: false  # Configure no painel do Render
+      - key: MAIL_FROM
+        sync: false  # Configure no painel do Render
+
