@@ -133,6 +133,24 @@ UPLOAD_DIR = os.path.join(os.path.dirname(__file__), 'uploads')
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
+# Rota raiz - informações da API
+@app.get("/")
+def root():
+	"""Rota raiz - informações sobre a API SwiftShop"""
+	return {
+		"message": "SwiftShop API",
+		"version": "1.0.0",
+		"status": "online",
+		"docs": "/docs",
+		"endpoints": {
+			"auth": "/auth/login, /auth/register",
+			"products": "/products",
+			"orders": "/orders",
+			"users": "/users (admin only)",
+			"documentation": "/docs"
+		}
+	}
+
 
 def _product_to_out(p: Product) -> ProductOut:
 	attrs: Optional[dict] = None
