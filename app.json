@@ -20,11 +20,23 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.maurozibane10.SwiftShop"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "swiftshop"
+    "scheme": "swiftshop",
+    "extra": {
+      "eas": {
+        "projectId": "2068d6f6-7646-4a10-bfd3-553d5701be3a"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/2068d6f6-7646-4a10-bfd3-553d5701be3a"
+    }
   }
 }

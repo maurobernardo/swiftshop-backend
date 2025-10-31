@@ -9,7 +9,7 @@ import { api } from '../api/client';
  */
 function getBaseUrl(): string {
 	// @ts-ignore - acessando propriedade interna do axios
-	return api.defaults.baseURL || 'http://172.16.20.141:8888';
+	return api.defaults.baseURL || process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8888';
 }
 
 /**
