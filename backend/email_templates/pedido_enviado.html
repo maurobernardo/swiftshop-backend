@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Pedido Enviado - SwiftShop{% endblock %}
+
+{% block content %}
+<h2 style="color: #1f2937; margin-bottom: 10px;">🚚 Seu Pedido Foi Enviado!</h2>
+<p style="color: #6b7280; font-size: 16px; margin-bottom: 30px;">
+    Olá <strong>{{ customer_name }}</strong>, seu pedido está a caminho!
+</p>
+
+<div class="status-badge status-shipped">
+    📬 Em Transporte
+</div>
+
+<p style="color: #6b7280; font-size: 16px; line-height: 1.8;">
+    Seu pedido <strong>#{{ order_id }}</strong> saiu para entrega e deve chegar em breve.
+    Fique atento ao endereço cadastrado!
+</p>
+
+{% if tracking_code %}
+<div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; padding: 20px; border-radius: 8px; margin: 25px 0; text-align: center;">
+    <p style="margin-bottom: 8px; opacity: 0.9;">Código de Rastreamento</p>
+    <h3 style="font-size: 24px; letter-spacing: 2px; font-weight: 700;">{{ tracking_code }}</h3>
+</div>
+{% endif %}
+
+<div class="order-details">
+    <h3>📍 Informações de Entrega</h3>
+    <div class="order-row">
+        <strong>Endereço:</strong>
+        <span>{{ shipping_address }}</span>
+    </div>
+    {% if estimated_delivery %}
+    <div class="order-row">
+        <strong>Previsão de Entrega:</strong>
+        <span>{{ estimated_delivery }}</span>
+    </div>
+    {% endif %}
+    <div class="order-row">
+        <strong>Data de Envio:</strong>
+        <span>{{ shipping_date }}</span>
+    </div>
+</div>
+
+<div class="divider"></div>
+
+<h3 style="color: #1f2937; margin-bottom: 15px;">🛍️ Produtos</h3>
+{% for item in items %}
+<div class="product-item">
+    <div class="product-info">
+        <div class="product-name">{{ item.product_name }}</div>
+        <div class="product-meta">
+            Quantidade: {{ item.quantity }}
+            {% if item.size %} • Tamanho: {{ item.size }}{% endif %}
+            {% if item.color %} • Cor: {{ item.color }}{% endif %}
+        </div>
+    </div>
+    <div class="product-price">{{ item.price }} MT</div>
+</div>
+{% endfor %}
+
+<p style="margin-top: 30px; color: #6b7280; background-color: #fef3c7; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+    📦 <strong>Dica:</strong> Certifique-se de que alguém estará disponível no endereço para receber a entrega.
+</p>
+{% endblock %}
+
+

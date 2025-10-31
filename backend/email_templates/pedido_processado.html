@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Pedido em Processamento - SwiftShop{% endblock %}
+
+{% block content %}
+<h2 style="color: #1f2937; margin-bottom: 10px;">⚙️ Seu Pedido Está Sendo Processado</h2>
+<p style="color: #6b7280; font-size: 16px; margin-bottom: 30px;">
+    Olá <strong>{{ customer_name }}</strong>, boas notícias!
+</p>
+
+<div class="status-badge status-processing">
+    🔄 Em Processamento
+</div>
+
+<p style="color: #6b7280; font-size: 16px; line-height: 1.8;">
+    Seu pedido <strong>#{{ order_id }}</strong> está sendo preparado pela nossa equipe.
+    Estamos separando seus produtos com todo cuidado para garantir que cheguem em perfeito estado.
+</p>
+
+<div class="order-details" style="margin-top: 30px;">
+    <h3>📦 Status Atual</h3>
+    <div class="order-row">
+        <strong>✅ Pedido Confirmado</strong>
+        <span>{{ order_date }}</span>
+    </div>
+    <div class="order-row">
+        <strong>🔄 Em Processamento</strong>
+        <span>Agora</span>
+    </div>
+    <div class="order-row" style="opacity: 0.5;">
+        <strong>🚚 Em Transporte</strong>
+        <span>Em breve</span>
+    </div>
+    <div class="order-row" style="opacity: 0.5;">
+        <strong>✅ Entregue</strong>
+        <span>Em breve</span>
+    </div>
+</div>
+
+<div class="divider"></div>
+
+<h3 style="color: #1f2937; margin-bottom: 15px;">🛍️ Produtos</h3>
+{% for item in items %}
+<div class="product-item">
+    <div class="product-info">
+        <div class="product-name">{{ item.product_name }}</div>
+        <div class="product-meta">
+            Quantidade: {{ item.quantity }}
+            {% if item.size %} • Tamanho: {{ item.size }}{% endif %}
+            {% if item.color %} • Cor: {{ item.color }}{% endif %}
+        </div>
+    </div>
+    <div class="product-price">{{ item.price }} MT</div>
+</div>
+{% endfor %}
+
+<p style="margin-top: 30px; color: #6b7280; background-color: #f0f9ff; padding: 15px; border-radius: 8px; border-left: 4px solid #6366f1;">
+    💡 <strong>Próximo passo:</strong> Você receberá um email assim que seu pedido for enviado para entrega.
+</p>
+{% endblock %}
+
+

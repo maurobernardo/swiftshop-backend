@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Pedido Confirmado - SwiftShop{% endblock %}
+
+{% block content %}
+<h2 style="color: #1f2937; margin-bottom: 10px;">✅ Pedido Confirmado!</h2>
+<p style="color: #6b7280; font-size: 16px; margin-bottom: 30px;">
+    Olá <strong>{{ customer_name }}</strong>, recebemos seu pedido com sucesso!
+</p>
+
+<div class="status-badge status-pending">
+    📦 Aguardando Processamento
+</div>
+
+<div class="order-details">
+    <h3>📋 Detalhes do Pedido</h3>
+    <div class="order-row">
+        <strong>Número do Pedido:</strong>
+        <span>#{{ order_id }}</span>
+    </div>
+    <div class="order-row">
+        <strong>Data:</strong>
+        <span>{{ order_date }}</span>
+    </div>
+    <div class="order-row">
+        <strong>Método de Pagamento:</strong>
+        <span>{{ payment_method }}</span>
+    </div>
+    <div class="order-row">
+        <strong>Endereço de Entrega:</strong>
+        <span>{{ shipping_address }}</span>
+    </div>
+</div>
+
+<div class="divider"></div>
+
+<h3 style="color: #1f2937; margin-bottom: 15px;">🛍️ Produtos</h3>
+{% for item in items %}
+<div class="product-item">
+    <div class="product-info">
+        <div class="product-name">{{ item.product_name }}</div>
+        <div class="product-meta">
+            Quantidade: {{ item.quantity }}
+            {% if item.size %} • Tamanho: {{ item.size }}{% endif %}
+            {% if item.color %} • Cor: {{ item.color }}{% endif %}
+        </div>
+    </div>
+    <div class="product-price">{{ item.price }} MT</div>
+</div>
+{% endfor %}
+
+<div class="total-section">
+    <div class="total-row">
+        <span>Subtotal:</span>
+        <span>{{ subtotal }} MT</span>
+    </div>
+    <div class="total-row">
+        <span>Frete:</span>
+        <span>{{ shipping_cost }} MT</span>
+    </div>
+    <div class="total-row total-final">
+        <span>Total:</span>
+        <span>{{ total }} MT</span>
+    </div>
+</div>
+
+<p style="margin-top: 30px; color: #6b7280;">
+    Você receberá atualizações por email sobre o status do seu pedido.
+    Obrigado por escolher a SwiftShop! 🎉
+</p>
+{% endblock %}
+
+

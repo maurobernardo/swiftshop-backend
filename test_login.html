@@ -1,0 +1,191 @@
+<FlatList
+    data={filtered}
+    keyExtractor={(item) => String(item.id)}
+    renderItem={({ item, index }) => (
+        <ProductCard product={item} onPress={...} onAdd={...}/>
+    )}
+/>
+
+<View style={{
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 16,
+    marginVertical: 6,
+    padding: theme.spacing(1.5),
+    // ...outros estilos
+}}>
+    <Image source={{ uri: ... }} style={{ width: 80, height: 80, borderRadius: 12 }} />
+    <View style={{ flex: 1, marginLeft: 12 }}>
+        <Text style={{...}}>Nome do produto</Text>
+        <Text style={{...}}>R$ preço</Text>
+        <Text style={{...}}>Descrição curta</Text>
+        {/* Outros botões/info */}
+    </View>
+</View>
+
+<Pressable
+style={{
+    backgroundColor: '#ff3333', // Altere esta linha para a cor desejada
+    // ... outros estilos
+}}
+// ... outros props
+>
+<Text>Comprar agora</Text>
+</Pressable>
+```
+
+- **Dica:** Se o projeto usa um tema, tipo:  
+`backgroundColor: theme.colors.accent,`  
+Você pode substituir por outra cor do tema ou um valor hex/rgba.
+
+---
+
+### 2. Mudar a cor do **card** (o container do produto ou do banner)
+
+- **Passo 1:** Localize o container principal do card.
+- Exemplo para card de produto em `ProductCard.tsx`:
+```tsx
+<View style={{
+  backgroundColor: 'white',  // Altere essa cor
+  // ... outros estilos
+}}>
+```
+
+- Para o banner/LinearGradient (banner de desconto na tela), altere o array `colors`:
+```tsx
+<LinearGradient
+  colors={['#ffb347', '#ffcc33']} // Substitua pelas cores desejadas
+  // ... outros props
+>
+```
+
+---
+
+### 3. Modos: usar cor fixa ou variável
+
+- Cor fixa:  
+`backgroundColor: '#3498db'`
+- Pelo tema:  
+`backgroundColor: theme.colors.primary`  
+*(Troque por outra cor definida em `src/theme.ts` se necessário!)*
+
+---
+
+### Resumo rápido (exemplo em um card):
+
+```tsx
+<View style={{
+backgroundColor: '#FFD700', // muda cor do card/or card banner
+// ...outros estilos
+}}>
+<Pressable style={{
+  backgroundColor: '#FF4500', // muda cor do botão dentro do card
+  borderRadius: 10,
+  padding: 10,
+}}>
+  <Text style={{ color: 'white' }}>Comprar agora</Text>
+</Pressable>
+</View>
+```
+
+---
+
+**Se você me disser o nome do botão ou card que deseja personalizar, eu te passo o trecho exato ou faço a alteração para você!**
+
+Se desejar ver as cores disponíveis no tema, posso mostrar um resumo também.
+
+<View style={{
+    backgroundColor: 'white',  // Altere essa cor
+    // ... outros estilos
+}}>
+
+<View style={{
+    backgroundColor: '#FFD700', // muda cor do card/or card banner
+    // ...outros estilos
+}}>
+    <Pressable style={{
+        backgroundColor: '#FF4500', // muda cor do botão dentro do card
+        borderRadius: 10,
+        padding: 10,
+    }}>
+        <Text style={{ color: 'white' }}>Comprar agora</Text>
+    </Pressable>
+</View>
+
+const pulseLoop = Animated.loop( ... );
+pulseLoop.start();
+
+return () => {
+  pulseLoop.stop(); // Ao desmontar/interromper a tela
+};
+ Localizar os botões
+Eles geralmente estão dentro do componente do produto, provavelmente no arquivo:
+  src/components/ProductCard.tsx  ```- Ou, se o botão for de banner ou da própria tela, está em:  ```  src/screens/client/CatalogScreen.tsx  ```---### 2. Organizar na horizontal- **Envolva os botões em uma View** com `flexDirection: 'row'`:  ```jsx  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>    <Pressable style={{ marginRight: 8, flex: 1, ... }}>      <Text>Botão 1</Text>    </Pressable>    <Pressable style={{ flex: 1, ... }}>      <Text>Botão 2</Text>    </Pressable>  </View>  ```- Altere espaçamentos (como `marginRight`, `gap`, `flex`) para o visual desejado.---### 3. Exemplo detalhado```jsx<View style={{ flexDirection: 'row', gap: 12, marginTop: 8 }}>  <Pressable    style={{      backgroundColor: '#ff8800',      borderRadius: 8,      padding: 10,      flex: 1,      alignItems: 'center',    }}>    <Text style={{ color: '#fff' }}>Comprar</Text>  </Pressable>  <Pressable    style={{      backgroundColor: '#6666ff',      borderRadius: 8,      padding: 10,      flex: 1,      alignItems: 'center',    }}>    <Text style={{ color: '#fff' }}>Favoritar</Text>  </Pressable></View>```---### 4. No contexto do catálogo- Se cada card tinha um botão sob o outro (vertical), apenas envolva ambos no `View` acima e ajuste o estilo.- Se for botão do banner/discount, siga o mesmo padrão: envolva todos que quiser alinhar lado a lado.---### Resumindo- **Altere para `flexDirection: 'row'`** o container dos botões.- Ajuste o `style` dos botões para ficarem proporcionais e com separação.---Se você quiser que eu faça o exemplo exato no seu `ProductCard`, só me diga os nomes dos botões (por exemplo “Comprar agora”, “Favoritar”, “Adicionar ao carrinho”, etc.) ou me mostre a seção e eu envio o código pronto para uso!
+Ou, se o botão for de banner ou da própria tela, está em:
+  src/screens/client/CatalogScreen.tsx
+2. Organizar na horizontal
+Envolva os botões em uma View com flexDirection: 'row':
+  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>    <Pressable style={{ marginRight: 8, flex: 1, ... }}>      <Text>Botão 1</Text>    </Pressable>    <Pressable style={{ flex: 1, ... }}>      <Text>Botão 2</Text>    </Pressable>  </View>
+Altere espaçamentos (como marginRight, gap, flex) para o visual desejado.
+3. Exemplo detalhado
+<View style={{ flexDirection: 'row', gap: 12, marginTop: 8 }}>  <Pressable    style={{      backgroundColor: '#ff8800',      borderRadius: 8,      padding: 10,      flex: 1,      alignItems: 'center',    }}>    <Text style={{ color: '#fff' }}>Comprar</Text>  </Pressable>  <Pressable    style={{      backgroundColor: '#6666ff',      borderRadius: 8,      padding: 10,      flex: 1,      alignItems: 'center',    }}>    <Text style={{ color: '#fff' }}>Favoritar</Text>  </Pressable></View>
+4. No contexto do catálogo
+Se cada card tinha um botão sob o outro (vertical), apenas envolva ambos no View acima e ajuste o estilo.
+Se for botão do banner/discount, siga o mesmo padrão: envolva todos que quiser alinhar lado a lado.
+Resumindo
+Altere para flexDirection: 'row' o container dos botões.
+Ajuste o style dos botões para ficarem proporcionais e com separação.
+Se você quiser que eu faça o exemplo exato no seu ProductCard, só me diga os nomes dos botões (por exemplo “Comprar agora”, “Favoritar”, “Adicionar ao carrinho”, etc.) ou me mostre a seção e eu envio o código pronto para uso!
+
+
+const [visibleCount, setVisibleCount] = useState(3);
+
+
+<FlatList
+  data={filtered.slice(0, visibleCount)}
+  // ...seus outros props
+/>
+
+{visibleCount < filtered.length && (
+  <Pressable
+    style={{
+      marginTop: 16,
+      backgroundColor: '#3498db',
+      padding: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+    }}
+    onPress={() => setVisibleCount((prev) => prev + 3)}
+  >
+    <Text style={{ color: '#fff', fontWeight: 'bold' }}>Carregar mais</Text>
+  </Pressable>
+)}
+<ScrollView
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={{ gap: 8, paddingVertical: 4, paddingHorizontal: 2 }}
+>
+  {(['Todos', ...Object.keys(CATEGORY_MAP)] as WithAll<MainCategory>[]).map((m) => (
+    <Chip key={String(m)} ... />
+  ))}
+</ScrollView>
+
+<ScrollView
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={{ gap: 8, paddingVertical: 4, paddingHorizontal: 2 }}
+>
+  {(['Todos', ...Object.keys(CATEGORY_MAP)] as WithAll<MainCategory>[]).map((m) => (
+    <Chip
+      key={String(m)}
+      label={String(m)}
+      active={mainCategory === m}
+      iconName={m === 'Vestuário' ? 'shirt' : m === 'Tecnologia' ? 'laptop' : undefined}
+      onPress={() => {
+        setMainCategory(m);
+        setSubCategory('Todos');
+      }}
+    />
+  ))}
+</ScrollView>

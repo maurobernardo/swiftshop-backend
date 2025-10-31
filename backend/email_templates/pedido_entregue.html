@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Pedido Entregue - SwiftShop{% endblock %}
+
+{% block content %}
+<h2 style="color: #1f2937; margin-bottom: 10px;">🎉 Pedido Entregue com Sucesso!</h2>
+<p style="color: #6b7280; font-size: 16px; margin-bottom: 30px;">
+    Olá <strong>{{ customer_name }}</strong>, seu pedido foi entregue!
+</p>
+
+<div class="status-badge status-delivered">
+    ✅ Entregue
+</div>
+
+<p style="color: #6b7280; font-size: 16px; line-height: 1.8;">
+    Seu pedido <strong>#{{ order_id }}</strong> foi entregue com sucesso no endereço cadastrado.
+    Esperamos que você aproveite seus produtos! 🎁
+</p>
+
+<div class="order-details">
+    <h3>✅ Confirmação de Entrega</h3>
+    <div class="order-row">
+        <strong>Data de Entrega:</strong>
+        <span>{{ delivery_date }}</span>
+    </div>
+    <div class="order-row">
+        <strong>Recebido por:</strong>
+        <span>{{ received_by }}</span>
+    </div>
+    <div class="order-row">
+        <strong>Endereço:</strong>
+        <span>{{ shipping_address }}</span>
+    </div>
+</div>
+
+<div class="divider"></div>
+
+<h3 style="color: #1f2937; margin-bottom: 15px;">🛍️ Produtos Entregues</h3>
+{% for item in items %}
+<div class="product-item">
+    <div class="product-info">
+        <div class="product-name">{{ item.product_name }}</div>
+        <div class="product-meta">
+            Quantidade: {{ item.quantity }}
+            {% if item.size %} • Tamanho: {{ item.size %}{% endif %}
+            {% if item.color %} • Cor: {{ item.color }}{% endif %}
+        </div>
+    </div>
+    <div class="product-price">{{ item.price }} MT</div>
+</div>
+{% endfor %}
+
+<div style="background-color: #f0fdf4; border-radius: 8px; padding: 25px; margin-top: 30px; text-align: center; border: 2px solid #22c55e;">
+    <h3 style="color: #15803d; margin-bottom: 15px;">⭐ Como foi sua experiência?</h3>
+    <p style="color: #6b7280; margin-bottom: 20px;">
+        Sua opinião é muito importante para nós!
+    </p>
+    <a href="#" class="cta-button" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);">
+        ⭐ Avaliar Compra
+    </a>
+</div>
+
+<p style="margin-top: 30px; color: #6b7280; text-align: center;">
+    Encontrou algum problema com seu pedido?<br>
+    <a href="mailto:support@swiftshop.com" style="color: #6366f1; font-weight: 600;">Entre em contato conosco</a>
+</p>
+
+<p style="margin-top: 20px; color: #6b7280; text-align: center; font-size: 18px;">
+    Obrigado por comprar na SwiftShop! 💜
+</p>
+{% endblock %}
+
+
