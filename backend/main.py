@@ -400,25 +400,25 @@ def update_me(
     db.add(current)
     db.commit()
     db.refresh(current)
-	
-	# Normalizar avatar_url antes de retornar
-	normalized_avatar = normalize_image_url(current.avatar_url) if current.avatar_url else None
-	user_dict = {
-		'id': current.id,
-		'name': current.name,
-		'email': current.email,
-		'role': current.role,
-		'is_blocked': current.is_blocked,
-		'avatar_url': normalized_avatar,
-		'phone': current.phone,
-		'country': current.country,
-		'state': current.state,
-		'city': current.city,
-		'street': current.street,
-		'number': current.number,
-		'reference': current.reference,
-	}
-	return UserOut(**user_dict)
+    
+    # Normalizar avatar_url antes de retornar
+    normalized_avatar = normalize_image_url(current.avatar_url) if current.avatar_url else None
+    user_dict = {
+        'id': current.id,
+        'name': current.name,
+        'email': current.email,
+        'role': current.role,
+        'is_blocked': current.is_blocked,
+        'avatar_url': normalized_avatar,
+        'phone': current.phone,
+        'country': current.country,
+        'state': current.state,
+        'city': current.city,
+        'street': current.street,
+        'number': current.number,
+        'reference': current.reference,
+    }
+    return UserOut(**user_dict)
 
 
 # Products
