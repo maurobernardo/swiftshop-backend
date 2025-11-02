@@ -133,6 +133,54 @@ UPLOAD_DIR = os.path.join(os.path.dirname(__file__), 'uploads')
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
+# URL base da API - sempre usa a URL de produção quando disponível
+def get_base_url() -> str:
+	"""Retorna a URL base da API, priorizando produção"""
+	# Verifica se está rodando no Render (produção)
+	render_url = os.environ.get('RENDER_EXTERNAL_URL')
+	if render_url:
+		return render_url.rstrip('/')
+	
+	# URL de produção hardcoded como fallback
+	production_url = 'https://swiftshop-backend-a4px.onrender.com'
+	return production_url
+
+def normalize_image_url(url: str) -> str:
+	"""Converte URL de imagem para usar a URL de produção"""
+	if not url:
+		return url
+	
+	# Se já é uma URL completa com domínio de produção, retorna
+	if url.startswith('https://swiftshop-backend-a4px.onrender.com'):
+		return url
+	
+	# Se é URL relativa (começa com /), adiciona base URL de produção
+	if url.startswith('/'):
+		return f"{get_base_url()}{url}"
+	
+	# Se contém IP local (172.16.x.x ou 192.168.x.x ou 127.0.0.1), substitui pela URL de produção
+	if '://172.16.' in url or '://192.168.' in url or '://127.0.0.1' in url or '://localhost' in url:
+		# Extrai o caminho após o domínio/IP
+		if '/uploads/' in url:
+			path = '/uploads/' + url.split('/uploads/')[-1]
+			return f"{get_base_url()}{path}"
+		elif '/uploads' in url:
+			path = url.split('/uploads')[1]
+			return f"{get_base_url()}/uploads{path}"
+	
+	# Se já é URL completa (http/https), retorna como está
+	if url.startswith('http://') or url.startswith('https://'):
+		return url
+	
+	# Caso padrão: assume que é relativa
+	return f"{get_base_url()}/{url}"
+
+def normalize_image_urls(urls: Optional[List[str]]) -> Optional[List[str]]:
+	"""Normaliza um array de URLs de imagens"""
+	if not urls:
+		return urls
+	return [normalize_image_url(url) for url in urls if url]
+
 # Rota raiz - informações da API
 @app.get("/")
 def root():
@@ -218,14 +266,25 @@ def _product_to_out(p: Product) -> ProductOut:
 		except Exception:
 			size_stock = None
 	
+	# Normalizar URLs de imagens para usar URL de produção
+	normalized_image_url = normalize_image_url(p.image_url) if p.image_url else None
+	normalized_image_urls = normalize_image_urls(image_urls)
+	
+	# Normalizar size_images também
+	normalized_size_images = None
+	if size_images:
+		normalized_size_images = {}
+		for size, images_list in size_images.items():
+			normalized_size_images[size] = [normalize_image_url(img) for img in images_list]
+	
 	return ProductOut(
 		id=p.id,
 		name=p.name,
 		price=p.price,
 		description=p.description,
-		image_url=p.image_url,
-		image_urls=image_urls,
-		size_images=size_images,
+		image_url=normalized_image_url,
+		image_urls=normalized_image_urls,
+		size_images=normalized_size_images,
 		size_colors=size_colors,
 		size_stock=size_stock,
 		category=p.category,
@@ -243,8 +302,10 @@ def upload_image(file: UploadFile = File(...)):
 	path = os.path.join(UPLOAD_DIR, filename)
 	with open(path, 'wb') as f:
 		f.write(file.file.read())
+	# Retorna URL normalizada com produção
 	url = f"/uploads/{filename}"
-	return {"url": url}
+	normalized_url = normalize_image_url(url)
+	return {"url": normalized_url}
 
 
 # Auth
