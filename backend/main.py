@@ -331,7 +331,25 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
 	db.add(user)
 	db.commit()
 	db.refresh(user)
-	return user
+	
+	# Normalizar avatar_url antes de retornar
+	normalized_avatar = normalize_image_url(user.avatar_url) if user.avatar_url else None
+	user_dict = {
+		'id': user.id,
+		'name': user.name,
+		'email': user.email,
+		'role': user.role,
+		'is_blocked': user.is_blocked,
+		'avatar_url': normalized_avatar,
+		'phone': user.phone,
+		'country': user.country,
+		'state': user.state,
+		'city': user.city,
+		'street': user.street,
+		'number': user.number,
+		'reference': user.reference,
+	}
+	return UserOut(**user_dict)
 
 
 @app.post("/auth/login", response_model=Token)
@@ -345,7 +363,25 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
 
 @app.get("/auth/me", response_model=UserOut)
 def me(current: User = Depends(get_current_user)):
-	return current
+	# Normalizar avatar_url antes de retornar
+	normalized_avatar = normalize_image_url(current.avatar_url) if current.avatar_url else None
+	# Criar cópia do objeto com avatar normalizado
+	user_dict = {
+		'id': current.id,
+		'name': current.name,
+		'email': current.email,
+		'role': current.role,
+		'is_blocked': current.is_blocked,
+		'avatar_url': normalized_avatar,
+		'phone': current.phone,
+		'country': current.country,
+		'state': current.state,
+		'city': current.city,
+		'street': current.street,
+		'number': current.number,
+		'reference': current.reference,
+	}
+	return UserOut(**user_dict)
 
 
 @app.put("/auth/me", response_model=UserOut)
@@ -364,7 +400,25 @@ def update_me(
     db.add(current)
     db.commit()
     db.refresh(current)
-    return current
+	
+	# Normalizar avatar_url antes de retornar
+	normalized_avatar = normalize_image_url(current.avatar_url) if current.avatar_url else None
+	user_dict = {
+		'id': current.id,
+		'name': current.name,
+		'email': current.email,
+		'role': current.role,
+		'is_blocked': current.is_blocked,
+		'avatar_url': normalized_avatar,
+		'phone': current.phone,
+		'country': current.country,
+		'state': current.state,
+		'city': current.city,
+		'street': current.street,
+		'number': current.number,
+		'reference': current.reference,
+	}
+	return UserOut(**user_dict)
 
 
 # Products
@@ -644,14 +698,34 @@ async def create_order(order_in: OrderCreate, current: User = Depends(get_curren
 	# Criar tarefa em background sem aguardar
 	asyncio.create_task(send_emails_background())
 	
-	return order
+	return _order_to_out(order)
 
+
+def _order_to_out(order: Order) -> OrderOut:
+	"""Converte Order para OrderOut, normalizando imagens dos produtos"""
+	normalized_items = []
+	for item in order.items:
+		# Usar _product_to_out para normalizar o produto
+		normalized_product = _product_to_out(item.product)
+		normalized_items.append({
+			'id': item.id,
+			'product_id': item.product_id,
+			'quantity': item.quantity,
+			'unit_price': item.unit_price,
+			'product': normalized_product,
+		})
+	return OrderOut(
+		id=order.id,
+		user_id=order.user_id,
+		status=order.status,
+		created_at=order.created_at,
+		items=normalized_items,
+	)
 
 @app.get("/orders", response_model=List[OrderOut])
 def list_my_orders(current: User = Depends(get_current_user), db: Session = Depends(get_db)):
-	if current.role == UserRole.admin:
-		return db.query(Order).order_by(Order.created_at.desc()).all()
-	return db.query(Order).filter(Order.user_id == current.id).order_by(Order.created_at.desc()).all()
+	orders = db.query(Order).order_by(Order.created_at.desc()).all() if current.role == UserRole.admin else db.query(Order).filter(Order.user_id == current.id).order_by(Order.created_at.desc()).all()
+	return [_order_to_out(order) for order in orders]
 
 
 @app.get("/orders/{order_id}/receipt")
@@ -736,6 +810,9 @@ async def update_order_status(order_id: int, status_value: OrderStatus, db: Sess
 	db.commit()
 	db.refresh(order)
 	
+	# Normalizar order antes de retornar
+	normalized_order = _order_to_out(order)
+	
 	# Se o status mudou, enviar email apropriado em background
 	if old_status != status_value:
 		# Preparar dados dos itens
@@ -793,7 +870,7 @@ async def update_order_status(order_id: int, status_value: OrderStatus, db: Sess
 		# Criar tarefa em background sem aguardar
 		asyncio.create_task(send_status_email_background())
 	
-	return order
+	return normalized_order
 
 
 @app.delete("/orders/{order_id}", status_code=204, dependencies=[Depends(require_admin)])
@@ -809,7 +886,28 @@ def delete_order(order_id: int, db: Session = Depends(get_db)):
 # Users (admin)
 @app.get("/users", response_model=List[UserOut], dependencies=[Depends(require_admin)])
 def list_users(db: Session = Depends(get_db)):
-	return db.query(User).order_by(User.name.asc()).all()
+	users = db.query(User).order_by(User.name.asc()).all()
+	# Normalizar avatar_url de todos os usuários
+	result = []
+	for user in users:
+		normalized_avatar = normalize_image_url(user.avatar_url) if user.avatar_url else None
+		user_dict = {
+			'id': user.id,
+			'name': user.name,
+			'email': user.email,
+			'role': user.role,
+			'is_blocked': user.is_blocked,
+			'avatar_url': normalized_avatar,
+			'phone': user.phone,
+			'country': user.country,
+			'state': user.state,
+			'city': user.city,
+			'street': user.street,
+			'number': user.number,
+			'reference': user.reference,
+		}
+		result.append(UserOut(**user_dict))
+	return result
 
 
 @app.post("/users/admin", response_model=UserOut, dependencies=[Depends(require_admin)])
